@@ -1,6 +1,7 @@
 # Anisotropy Short Course 2026
 
-The course takes place at the Goethe University of Frankfurt. It is supervised by Andrea Tommasi and Thibault Duretz, thanks to the support of the Heraeus foundation.
+The course takes place at the Goethe University of Frankfurt. It is supervised by Andrea Tommasi and Thibault Duretz, and with the support of Anna Bardroff and Filippo Zarabara.
+This short course receives the support of the Heraeus foundation.
 
 This web page only concerns the modelling part of the course.
 
@@ -18,17 +19,25 @@ Before the course, we kindly ask the participants to:
 
 Dont worry if you don't get things to work on your own. We will take the time to get everything working if you're experiencing problems.
 
-### a) Setting up Julia and VScode
+### 1) Setting up Julia and VScodium
 
  bla bla...
 
-### b) Cloning and launching the poject
+### 2) Cloning and launching the poject
+
+#### a) Cloning the repository using *git*
 
 Once [Julia](https://julialang.org) and [VScodium code editor](https://vscodium.com) are installed, clone or download this repository from the GitHub web page.
 We recommend that you **clone** the repository using *git* software (Windows users may have to install git, Linux/MacOS includes it already).
 If you're not familiar with this workflow, you can read [this](https://www.datacamp.com/tutorial/git-clone-command) or ask help from your favourite AI.
 
-after cloning the repository, you can open it locally on your computer:
+The command line to clone the repository is:
+
+`git clone https://github.com/tduretz/AnisotropyShortCourse2026.git` 
+
+#### b) Launching into VScodium and testing
+
+After succesful cloning of the repository, you can open it locally on your computer:
 - In VScodium: clik `File` > `New Window`.
 - In VScodium: select the folder of the course `AnisotropyShortCourse2026` and open it.
 
@@ -38,7 +47,7 @@ If successful, you should see this: `(AnisotropyShortCourse2026) pkg>`. In order
 
 and wait a bit... If some packages fail to precompile, just restart Julia and then it should work.
 
-### c) The prepraratory exercise
+### 3) The prepraratory exercise
  bla bla...
 
 ## [Training: basic programming and visualisation](./scripts/part0)
