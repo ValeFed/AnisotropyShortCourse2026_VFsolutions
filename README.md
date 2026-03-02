@@ -29,7 +29,7 @@ See the guide [here](https://apxml.com/courses/getting-started-julia-programming
 
 Main steps:
 - Get the programm [juliaup](https://github.com/JuliaLang/juliaup), this tool allows to you to download and manage Julia versions. The tool `juliaup` is available for most platforms.
-- Use juliaup to install julia on your computer 
+- Use juliaup to install a julia version on your computer 
 
 Some useful video resources about Julia installation and basic usage can be found in that [youtube channel](https://www.youtube.com/watch?v=N_CQQgKEbdc&list=PLHohvTggxulqYC3f1gq5x7UqKDteDhA4-).
 
@@ -39,30 +39,32 @@ Simply go to the [VScodium webpage](https://vscodium.com), download for your pla
 
 ### c) Install the Julia Language Support
 
-Achtung: this step can only be donne successfully is step a (and b) are completed.
+Achtung: this step can only be done successfully if step a (and b) are completed.
 
 - open VScodium
 - click on the extensions tab to the left of the VScodium window  <img src="./images/extensions_tab.png" width=30px> 
 - seach for Julia, you should find and install the Julia Language Support
 <img src="./images/Julia_LS.png" width=250px> 
 
-Now you're ready for cloning the course and launching project...
+Now you're ready for cloning the course and launching the project...
 
 ### 2) Cloning and launching the project
 
 #### a) Cloning the repository using *git*
 
 Once [Julia](https://julialang.org) and [VScodium code editor](https://vscodium.com) are installed, clone or download this repository from the GitHub web page.
-We recommend that you **clone** the repository using *git* software (Windows users may have to install git, Linux/MacOS includes it already).
+We recommend that you **clone** the repository using *git* software (Windows users may have to install git, Linux/MacOS includes it already. You can test your installation by running `git -v` in the terminal. If git is installed properly, this should return its current version).
 If you're not familiar with this workflow, you can read [this](https://www.datacamp.com/tutorial/git-clone-command) or ask help from your favourite AI.
 
 The command line to clone the repository is:
 
-`git clone https://github.com/tduretz/AnisotropyShortCourse2026.git` 
+`git clone https://github.com/tduretz/AnisotropyShortCourse2026.git`
+
+This will create a new folder in the current directory. 
 
 #### b) Launching into VScodium and testing
 
-After succesful cloning of the repository, you can open it locally on your computer:
+After successful cloning of the repository, you can open it locally on your computer:
 - In VScodium: clik `File` > `New Window`.
 - In VScodium: select the folder of the course `AnisotropyShortCourse2026` and open it.
 
@@ -73,11 +75,11 @@ Execute the file by pressing the play button located at the top-right of the fil
 
 <img src="./images/play_button.png" width=200px> 
 
-This will open the Julia REPL inside VScode. If successful, it  will greet you with a warm welcome message.
+This will open the Julia REPL inside VScode. If successful, it will greet you with a warm welcome message.
 
 <img src="./images/welcome.png" width=350px> 
 
-Good! The now it's time to instantiate the Julia project. This steps downloads and installs all the necessary Julia packages required for our work. In the Julia REPL, press `]`, this will lead you to the package mode
+Good! The now it's time to instantiate the Julia project. This step downloads and installs all the necessary Julia packages required for our work. In the Julia REPL, press `]`, this will lead you to the package mode
 
 If successful, you should see this: 
 
