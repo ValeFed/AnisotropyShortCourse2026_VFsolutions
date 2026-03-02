@@ -1,6 +1,6 @@
 # Anisotropy Short Course 2026
 
-The course takes place at the Goethe University of Frankfurt. It is supervised by Andrea Tommasi and Thibault Duretz, and with the support of Anna Bardroff and Filippo Zarabara.
+The course takes place at the Goethe University of Frankfurt. It is supervised by Andrea Tommasi and Thibault Duretz, and with the support of Anna Bardroff, Filippo Zarabara and Lara Friedrichs.
 This short course receives the support of the Heraeus foundation.
 
 This web page only concerns the modelling part of the course.
@@ -21,7 +21,31 @@ Dont worry if you don't get things to work on your own. We will take the time to
 
 ### 1) Setting up Julia and VScodium
 
- bla bla...
+In this course we will use two softwares: the [Julia](https://julialang.org) programming language and the [VScodium code editor](https://vscodium.com).
+
+### a) Install Julia
+
+See the guide [here](https://apxml.com/courses/getting-started-julia-programming/chapter-1-introducing-julia-setup-first-steps/installing-julia-on-your-system).
+
+Main steps:
+- Get the programm [juliaup](https://github.com/JuliaLang/juliaup), this tool allows to you to download and manage Julia versions. The tool `juliaup` is available for most platforms.
+- Use juliaup to install julia on your computer 
+
+### b) Install VScodium
+
+Simply go to the [VScodium webpage](https://vscodium.com), download for your platform, and install.
+
+### c) Install the Julia Language Support
+
+Achtung: this step can only be donne successfully is step a (and b) are completed.
+
+- open VScodium
+- click on the extensions tab to the left of the VScodium window 
+<img src="./images/extensions_tab.png" width=50px> 
+- seach for Julia, you should find and install the Julia Language Support
+<img src="./images/Julia_LS.png" width=250px> 
+
+Now you're ready for cloning the course and launching project...
 
 ### 2) Cloning and launching the poject
 
