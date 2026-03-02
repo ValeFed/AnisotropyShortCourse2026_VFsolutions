@@ -40,8 +40,7 @@ Simply go to the [VScodium webpage](https://vscodium.com), download for your pla
 Achtung: this step can only be donne successfully is step a (and b) are completed.
 
 - open VScodium
-- click on the extensions tab to the left of the VScodium window 
-<img src="./images/extensions_tab.png" width=30px> 
+- click on the extensions tab to the left of the VScodium window  <img src="./images/extensions_tab.png" width=30px> 
 - seach for Julia, you should find and install the Julia Language Support
 <img src="./images/Julia_LS.png" width=250px> 
 
