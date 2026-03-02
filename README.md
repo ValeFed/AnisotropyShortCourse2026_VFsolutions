@@ -28,8 +28,8 @@ In this course we will use two softwares: the [Julia](https://julialang.org) pro
 See the guide [here](https://apxml.com/courses/getting-started-julia-programming/chapter-1-introducing-julia-setup-first-steps/installing-julia-on-your-system).
 
 Main steps:
-- Get the programm [juliaup](https://github.com/JuliaLang/juliaup), this tool allows to you to download and manage Julia versions. The tool `juliaup` is available for most platforms.
-- Use juliaup to install a julia version on your computer 
+- Get the program [juliaup](https://github.com/JuliaLang/juliaup), this tool allows to you to download and manage Julia versions. The tool `juliaup` is available for most platforms.
+- Use juliaup to install a Julia version on your computer 
 
 Some useful video resources about Julia installation and basic usage can be found in that [youtube channel](https://www.youtube.com/watch?v=N_CQQgKEbdc&list=PLHohvTggxulqYC3f1gq5x7UqKDteDhA4-).
 
