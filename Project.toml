@@ -2,3 +2,11 @@ name = "AnisotropyShortCourse2026"
 uuid = "9ad52964-55eb-4d57-b51c-fcaafc1ec186"
 version = "0.1.0"
 authors = ["tduretz <duretz@uni-frankfurt.de>"]
+
+[deps]
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+Plots = "1.41.6"
+StaticArrays = "1.9.17"

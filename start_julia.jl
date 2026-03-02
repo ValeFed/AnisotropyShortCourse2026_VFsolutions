@@ -1,0 +1,1 @@
+println("Welcome to the Anisotropy Short Course 2026!")
