@@ -92,7 +92,7 @@ Now, type the following command to finalise the procedure and press enter:
 Use the file explorer of VScodium, to left of the window, click on the tab: <img src="./images/explorer_tab.png" width=30px> 
 
 
-Open the [preparatory exercise]((./scripts/part0)) located in `./scripts/part0/`, the file is called `ArrayProgramming_stud.ipynb`. This is a notebook file than can be edited inside VScodium, using the Julia kernel that was installed in the previous steps. 
+Open the [preparatory exercise](./scripts/part0/) located in `./scripts/part0/`, the file is called `ArrayProgramming_stud.ipynb`. This is a notebook file than can be edited inside VScodium, using the Julia kernel that was installed in the previous steps. 
 
 Follow the steps and complete the exercise. The aim of the tutorial is to introduce you to working with arrays and visualising data in one and two dimensions.
 
