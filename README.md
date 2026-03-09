@@ -102,6 +102,12 @@ Follow the steps and complete the exercise. The aim of the tutorial is to introd
 
 ## [Part 1: Anisotropic rheology in 2D](./scripts/part1)
 
+The lecture notes are available [here](https://next.hessenbox.de/index.php/s/S9JJ6BRqn6TRrqy).
+
+The exercises scripts are available [there](./scripts/part1). 
+
 ## [Part 2: Anisotropic mechanics in 2D](./scripts/part2)
 
+The lecture notes are available [here](https://next.hessenbox.de/index.php/s/S9JJ6BRqn6TRrqy).
 
+The exercises scripts are available [there](./scripts/part2). 
