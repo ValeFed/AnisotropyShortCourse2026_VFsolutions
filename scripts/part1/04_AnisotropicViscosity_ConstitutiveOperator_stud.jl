@@ -72,7 +72,10 @@ function (@main)()
             τ_cart, τ_mat = AnisotropicViscousRheology(ε̇, η, θ, δ)
 
             # @TODO: Compute the rheological tensor in Cartesian coordinates using automatic differentiation
-            𝐃_cart = ForwardDiff.jacobian(ε -> first(AnisotropicViscousRheology(ε, η, θ, δ)), ε̇)
+            f(ε) = first(AnisotropicViscousRheology(ε, η, θ, δ))
+            𝐃_cart = ForwardDiff.jacobian(f, ε̇)
+            
+            
             # Display tensor
             display(𝐃_cart)
 
