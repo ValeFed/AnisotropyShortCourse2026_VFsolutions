@@ -4,29 +4,32 @@ ky = 1e3*365.25*24*3600
 
 # @TODO: code the function that computes the second invariant
 # assume a is a 3-component vector: [axx; ayy; axy]
-# invII(a) = ...
+invII(a) = sqrt(0.5 * a[1]^2 + 0.5 * a[2]^2 + a[3]^2)
 
 # @TODO: define the anisotropic invariant
-# invII_aniso(a, δ) = ...
+invII_aniso(a, δ) = sqrt(0.5 * a[1]^2 + 0.5 * a[2]^2 + (δ*a[3])^2)
 
 function AnisotropicViscousRheology(ε̇_cart, η, θ, δ)
 
     # @TODO: Define the transformation matrix
-    # T     = ...
+    T     = [cosd(θ)^2 sind(θ)^2  2*cosd(θ)*sind(θ);
+             sind(θ)^2  cosd(θ)^2 -2*cosd(θ)*sind(θ);
+            -cosd(θ)*sind(θ) cosd(θ)*sind(θ) cosd(θ)^2 - sind(θ)^2]
 
     # Deviatoric strain rate in material coordinates 
     # @TODO: forward transformation
-    # ε̇_mat    = ...
+    ε̇_mat    = T * ε̇_cart
 
     # @TODO: Define the constitutive operator for transverse isotropic viscous flow 
-    # 𝐃_mat    = ...
+    𝐃_mat    = 2η*I(3)
+    𝐃_mat[3,3] = 𝐃_mat[3,3]/δ
 
     # @TODO: Evaluate deviatoric stress
-    # τ_mat = ...
+    τ_mat = 𝐃_mat * ε̇_mat
 
     # Deviatoric stress in Cartesian coordinates
     # @TODO: backward transformation
-    # τ_cart   = ...
+    τ_cart   = T \ τ_mat
     return τ_cart, τ_mat
 end
 
@@ -69,8 +72,7 @@ function (@main)()
             τ_cart, τ_mat = AnisotropicViscousRheology(ε̇, η, θ, δ)
 
             # @TODO: Compute the rheological tensor in Cartesian coordinates using automatic differentiation
-            # 𝐃_cart = ...
-
+            𝐃_cart = ForwardDiff.jacobian(ε -> first(AnisotropicViscousRheology(ε, η, θ, δ)), ε̇)
             # Display tensor
             display(𝐃_cart)
 
