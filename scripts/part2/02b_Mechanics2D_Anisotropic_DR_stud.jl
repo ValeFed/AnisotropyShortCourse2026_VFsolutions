@@ -62,19 +62,19 @@ function Mechanics2D()
     ηinc    = 1e-1
     ηmat    = 1.0
     ξmat    = 1e2
-    r       = 0.1
+    r       = 0.2
     ε̇bg     = 1.0
 
     # Boundary loading type
-    L_BC = SA[-ε̇bg 0.0; 
-                0.0 ε̇bg]
+    L_BC = SA[0.0 0.0; 
+             ε̇bg 0.0]
  
     # @TODO: define transverse isotropy parameters
     δ       = 10
     θ       = 20
 
     # Numerics
-    ncx     = 101                               # centroids in x
+    ncx     = 151                              # centroids in x
     ncy     = ncx                               # centroids in y
     Δx      = (xmax-xmin) / ncx                 # grid step x
     Δy      = (ymax-ymin) / ncx                 # grid step y
@@ -123,8 +123,12 @@ function Mechanics2D()
     y = ( c=LinRange(ymin, ymax, ncy), v=LinRange(ymin, ymax, ncy+1), i=LinRange(ymin-Δy/2, ymax+Δy/2, ncy+2) ) 
 
     # @TODO: Define viscosity on vertices
+    ϕ = 45
+    c, s = cosd(ϕ), sind(ϕ)
+    Xr =  c .* x.v.+ s .* y.v'
+    Yr = -s .* x.v .+ c .* y.v'
     η.v .= ηmat
-    η.v[(x.v.^2 .+ y.v'.^2) .< r^2] .= ηinc
+    η.v[((2.3 .* Xr).^2 .+ (Yr').^2 .< r^2)] .= ηinc
     
     # Interpolate viscosity from vertices to centroids
     η.c .= av(η.v) 
@@ -143,8 +147,8 @@ function Mechanics2D()
     end
 
     # @TODO: define a pure shear velocity Vx array on i grid and Vy array on j grid
-    V.x.i  .= L_BC[1,1] * x.v # just because it is pure shear, we don't need the shear component
-    V.y.j  .= L_BC[2,2] * y.v'
+    V.x.i  .= L_BC[1,1] * x.v + L_BC[1,2] * y.v # takes into account also the simple shear component
+    V.y.j  .= L_BC[2,1] * x.v' + L_BC[2,2] * y.v'
 
     # @TODO: define these scalar values of boudary velocity components
     VxW, VxE = V.x.i[1], V.x.i[end] # or L_BC[1,1]*xmin and L_BC[1,1]*xmax
@@ -158,10 +162,10 @@ function Mechanics2D()
     display(plot(p1, p2, p3, p4))
 
     # Iterative solver parameters
-    niter = 10000   # Maximum number of iterations
+    niter = 20000   # Maximum number of iterations
     nout  = 200     # Check error each nout iterations
     tol   = 1e-5    # Tolerance of the solver (stop iterations when error has decreased below that level)
-    CFL   = 0.95    # CFL value is 0.90 - 0.99
+    CFL   = 0.99    # CFL value is 0.90 - 0.99
     cf    = 1.0     # Damping factor ~ 0.5 - 1.0
     err0  = 1.0     # Dummy initial error value
 
