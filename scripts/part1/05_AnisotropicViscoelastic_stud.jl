@@ -4,36 +4,40 @@ ky = 1e3*365.25*24*3600
 
 # 1) code the function that computes the second invariant
 # assume a is a 3-component vector: [axx; ayy; axy]
-# invII(a) = ...
+invII(a) = sqrt(0.5 * a[1]^2 + 0.5 * a[2]^2 + a[3]^2)
 
-# invII_aniso(a, δ) = ...
+invII_aniso(a, δ) = sqrt(0.5 * a[1]^2 + 0.5 * a[2]^2 + (δ*a[3])^2)
 
 function AnisotropicViscoelasticRheology(ε̇_cart, τ0_cart, η, G, θ, δ, Δt)
 
     # Transformation matrix
     c, s  = cosd(θ), sind(θ)
-    # T     = ...
+    T     = [cosd(θ)^2 sind(θ)^2  2*cosd(θ)*sind(θ);
+             sind(θ)^2  cosd(θ)^2 -2*cosd(θ)*sind(θ);
+            -cosd(θ)*sind(θ) cosd(θ)*sind(θ) cosd(θ)^2 - sind(θ)^2]
+
 
     # @TODO: Deviatoric strain rate in material coordinates (forward transformation)
-    # ε̇_mat     = ...
+    ε̇_mat    = T * ε̇_cart
 
     # @TODO: Old deviatoric stress in material coordinates (forward transformation)
-    # τ0_mat    = ...
+    τ0_mat    = T * τ0_cart
 
     # @TODO: Effective strain rate accounting for old deviatoric stress
-    # ε̇_mat_eff = ...
+    ε̇_mat_eff = ε̇_mat + τ0_mat/(2G*Δt)
 
     # @TODO: Effective viscosity
-    # η_eff = ...
+    η_eff = (1/(η) + 1/(G*Δt))^-1
 
     # @TODO: Constitutive matrix in material coordinates
-    # 𝐃_mat    = ...
+    𝐃_mat    = 2η_eff*I(3)
+    𝐃_mat[3,3] = 𝐃_mat[3,3]/δ
 
     # @TODO: Deviatoric stress in material coordinates
-    # τ_mat = ...
+    τ_mat = 𝐃_mat * ε̇_mat_eff
 
     # @TODO: Deviatoric stress in Cartesian coordinates (backward transformation)
-    # τ_cart   =...
+    τ_cart   = T \ τ_mat
 
     return τ_cart, τ_mat
 end
