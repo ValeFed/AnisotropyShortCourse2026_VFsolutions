@@ -2,9 +2,12 @@ using Plots, ForwardDiff, LinearAlgebra, StaticArrays
 
 av(η) = 1/4 .* ( η[1:end-1,1:end-1] .+ η[1:end-1,2:end-0] .+ η[2:end-0,1:end-1] .+ η[2:end-0,2:end-0] )
 
+invII(a) = sqrt(0.5 * a[1]^2 + 0.5 * a[2]^2 + a[3]^2)
+
+
 function ConstitutiveTensorVoigt(η)
     # @TODO: Define the constitutive operator for isotropic flow
-    # 𝐃 = ...
+    𝐃 = 2η*I(3)
     return 𝐃 
 end
 
@@ -32,7 +35,7 @@ function Mechanics2D()
     ymax    = 1/2                       
     ηinc    = 1e-1
     ηmat    = 1.0
-    ξmat    = 1e2
+    ξmat    = 1e2 # compaction viscosity -> it is a compressible model
     r       = 0.1
     ε̇bg     = 1.0
 
@@ -61,14 +64,14 @@ function Mechanics2D()
     ε̇       = ( 
         xx = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
         yy = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
-        zz = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
+        zz = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)), # because it is compressible
         xy = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
         II = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
     )
     τ       = ( 
         xx = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
         yy = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
-        zz = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
+        zz = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)), # because it is compressible
         xy = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
         II = (c = zeros(ncx+0, ncx+0), v = zeros(ncx+1, ncx+1)),
     )
@@ -86,17 +89,16 @@ function Mechanics2D()
     )
 
     # Pre-calculation  
-    x = ( c=LinRange(xmin, xmax, ncx), v=LinRange(xmin, xmax, ncx+1), j=LinRange(xmin-Δx/2, xmax+Δx/2, ncx+2) ) 
-    y = ( c=LinRange(ymin, ymax, ncy), v=LinRange(ymin, ymax, ncy+1), i=LinRange(ymin-Δy/2, ymax+Δy/2, ncy+2) ) 
+    x = ( c=LinRange(xmin, xmax, ncx), v=LinRange(xmin, xmax, ncx+1), j=LinRange(xmin-Δx/2, xmax+Δx/2, ncx+2)) 
+    y = ( c=LinRange(ymin, ymax, ncy), v=LinRange(ymin, ymax, ncy+1), i=LinRange(ymin-Δy/2, ymax+Δy/2, ncy+2)) 
 
     # @TODO: Define viscosity on vertices
-    # η.v .= ...
-    # ...
-    # ...
+    η.v .= ηmat
+    η.v[(x.v.^2 .+ y.v'.^2) .< r^2] .= ηinc
     
     # Interpolate viscosity from vertices to centroids
     η.c .= av(η.v) 
-    η.v[(x.v.^2 .+ y.v'.^2) .< r^2] .= ηinc
+    
 
     # Bulk viscosity
     ξ .= ξmat 
@@ -106,16 +108,17 @@ function Mechanics2D()
     for p = 1:2
         for i in eachindex(𝐃[p])
             # @TODO: call the function ConstitutiveTensorVoigt()
-            # 𝐃[p][i] = ...
+            𝐃[p][i] = ConstitutiveTensorVoigt(η[p][i]) #each cell has its own consitutive operator
         end
     end
 
     # @TODO: define a pure shear velocity Vx array on i grid and Vy array on j grid
-    # V.x.i  .= ... 
-    # V.y.j  .= ...
+    V.x.i  .= L_BC[1,1] * x.v # just because it is pure shear, we don't need the shear component
+    V.y.j  .= L_BC[2,2] * y.v'
+
     # @TODO: define these scalar values of boudary velocity components
-    # VxW, VxE = ...
-    # VyS, VyN = ...
+    VxW, VxE = V.x.i[1], V.x.i[end] # or L_BC[1,1]*xmin and L_BC[1,1]*xmax
+    VyS, VyN = V.y.j[1], V.y.j[end] # or L_BC[2,2]*ymin and L_BC[2,2]*ymax
 
     # Visualise initial fields
     p1 = heatmap(x.v, y.i, V.x[1]', aspect_ratio=1, title="Vx")
@@ -125,7 +128,7 @@ function Mechanics2D()
     display(plot(p1, p2, p3, p4))
 
     # @TODO: set this to true if your the steps above worked
-    solve = false
+    solve = true
 
     if solve 
 
@@ -220,20 +223,19 @@ function Mechanics2D()
                 c = 2*sqrt.(λmin)*cf
                 α = 2 .* Δτ^2 ./ (2 .+ c.*Δτ)
                 β = (2 .- c.*Δτ) ./ (2 .+ c.*Δτ)
-            end
-            
+            end 
         end
 
         # @TODO: calculate velocity magnitude on i grid
-        # V.I.i  .= ...
+        V.I.i  .= sqrt.(V.x.i.^2 .+ V.y.i.^2)
 
         # Plane strain
         ε̇.zz.c .= @. -(ε̇.xx.c + ε̇.yy.c)
         τ.zz.c .= @. -(τ.xx.c + τ.yy.c)
 
         # @TODO: calculate the second invariant of deviatoric strain rate and stress       
-        # ε̇.II.c .= ..
-        # τ.II.c .= ..
+        ε̇.II.c .= sqrt.((1/2) * (ε̇.xx.c.^2 + ε̇.yy.c.^2 + ε̇.zz.c.^2) + ε̇.xy.c.^2)
+        τ.II.c .= sqrt.((1/2) * (τ.xx.c.^2 + τ.yy.c.^2 + τ.zz.c.^2) + τ.xy.c.^2)
 
         # Visualise solution fields
         p1 = heatmap(x.v, y.i, V.I.i',  aspect_ratio=1, title="V"  , xlims=extrema(x.v))
