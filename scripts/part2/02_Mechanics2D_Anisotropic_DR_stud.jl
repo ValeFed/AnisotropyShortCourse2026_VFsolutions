@@ -2,10 +2,36 @@ using Plots, ForwardDiff, LinearAlgebra, StaticArrays
 
 av(η) = 1/4 .* ( η[1:end-1,1:end-1] .+ η[1:end-1,2:end-0] .+ η[2:end-0,1:end-1] .+ η[2:end-0,2:end-0] )
 
+
+function AnisotropicViscousRheology(ε̇_cart, η, θ, δ)
+
+    # @TODO: Define the transformation matrix
+    T     = [cosd(θ)^2 sind(θ)^2  2*cosd(θ)*sind(θ);
+             sind(θ)^2  cosd(θ)^2 -2*cosd(θ)*sind(θ);
+            -cosd(θ)*sind(θ) cosd(θ)*sind(θ) cosd(θ)^2 - sind(θ)^2]
+
+    # Deviatoric strain rate in material coordinates 
+    # @TODO: forward transformation
+    ε̇_mat    = T * ε̇_cart
+
+    # @TODO: Define the constitutive operator for transverse isotropic viscous flow 
+    𝐃_mat    = 2η*I(3)
+    𝐃_mat[3,3] = 𝐃_mat[3,3]/δ
+
+    # @TODO: Evaluate deviatoric stress
+    τ_mat = 𝐃_mat * ε̇_mat
+
+    # Deviatoric stress in Cartesian coordinates
+    # @TODO: backward transformation
+    τ_cart   = T \ τ_mat
+    return τ_cart, τ_mat
+end
+
 function ConstitutiveTensorVoigt(η, θ, δ)
     ε̇ = @SVector [1.0, 1.0, 1.0] 
     # @TODO: Call your function here !!!
-    # 𝐃 = ...
+    f(ε̇ ) = first(AnisotropicViscousRheology(ε̇ , η, θ, δ))
+    𝐃 =  ForwardDiff.jacobian(f, ε̇ ) #cartesian
     return 𝐃 
 end
 
@@ -41,11 +67,11 @@ function Mechanics2D()
 
     # Boundary loading type
     L_BC = SA[-ε̇bg 0.0; 
-    0.0 ε̇bg]
+               0.0 ε̇bg]
  
     # @TODO: define transverse isotropy parameters
-    # δ       = ???
-    # θ       = ???
+    δ       = 10
+    θ       = 20
 
     # Numerics
     ncx     = 101                               # centroids in x
@@ -97,13 +123,12 @@ function Mechanics2D()
     y = ( c=LinRange(ymin, ymax, ncy), v=LinRange(ymin, ymax, ncy+1), i=LinRange(ymin-Δy/2, ymax+Δy/2, ncy+2) ) 
 
     # @TODO: Define viscosity on vertices
-    # η.v .= ...
-    # ...
-    # ...
+    η.v .= ηmat
+    η.v[(x.v.^2 .+ y.v'.^2) .< r^2] .= ηinc
     
     # Interpolate viscosity from vertices to centroids
     η.c .= av(η.v) 
-    η.v[(x.v.^2 .+ y.v'.^2) .< r^2] .= ηinc
+    
 
     # Bulk viscosity
     ξ .= ξmat 
@@ -113,16 +138,17 @@ function Mechanics2D()
     for p = 1:2
         for i in eachindex(𝐃[p])
             # @TODO: call the function ConstitutiveTensorVoigt()
-            # 𝐃[p][i] = ...
+            𝐃[p][i] = ConstitutiveTensorVoigt(η[p][i],θ,δ) #each cell has its own consitutive operator
         end
     end
 
     # @TODO: define a pure shear velocity Vx array on i grid and Vy array on j grid
-    # V.x.i  .= ... 
-    # V.y.j  .= ...
+    V.x.i  .= L_BC[1,1] * x.v # just because it is pure shear, we don't need the shear component
+    V.y.j  .= L_BC[2,2] * y.v'
+
     # @TODO: define these scalar values of boudary velocity components
-    # VxW, VxE = ...
-    # VyS, VyN = ...
+    VxW, VxE = V.x.i[1], V.x.i[end] # or L_BC[1,1]*xmin and L_BC[1,1]*xmax
+    VyS, VyN = V.y.j[1], V.y.j[end] # or L_BC[2,2]*ymin and L_BC[2,2]*ymax
 
     # Visualise initial fields
     p1 = heatmap(x.v, y.i, V.x[1]', aspect_ratio=1, title="Vx")
@@ -227,15 +253,16 @@ function Mechanics2D()
     end
 
     # @TODO: calculate velocity magnitude on i grid
-    # V.I.i  .= ...
+    V.I.i  .= sqrt.(V.x.i.^2 .+ V.y.i.^2)
 
     # Plane strain
     ε̇.zz.c .= @. -(ε̇.xx.c + ε̇.yy.c)
     τ.zz.c .= @. -(τ.xx.c + τ.yy.c)
 
     # @TODO: calculate the second invariant of deviatoric strain rate and stress       
-    # ε̇.II.c .= ..
-    # τ.II.c .= ..
+    ε̇.II.c .= sqrt.((1/2) * (ε̇.xx.c.^2 + ε̇.yy.c.^2 + ε̇.zz.c.^2) + ε̇.xy.c.^2)
+    τ.II.c .= sqrt.((1/2) * (τ.xx.c.^2 + τ.yy.c.^2 + τ.zz.c.^2) + τ.xy.c.^2)
+
 
     # Visualise solution fields
     p1 = heatmap(x.v, y.i, V.I.i',  aspect_ratio=1, title="V"  , xlims=extrema(x.v))
